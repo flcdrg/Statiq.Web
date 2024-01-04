@@ -21,6 +21,7 @@ jobs:
       # https://github.com/NuGet/Home/issues/11548
       # https://twitter.com/xoofx/status/1488617114940452872?s=20&t=BKSN4j9rP6fOyg8l7aW0eg
       NUGET_CERT_REVOCATION_MODE: offline
+      Configuration: Release
     steps:
       - name: Get Source
         uses: actions/checkout@v4
@@ -39,7 +40,9 @@ jobs:
         with:
           dotnet-version: |
             8.x
-      - name: Build and Test
+      - name: Build
+        run: dotnet build
+      - name: Test
         run: dotnet test --logger "trx;LogFileName=test-results.trx"
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
