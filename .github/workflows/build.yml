@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - net80incremental
 jobs:
   build:
     name: Build
@@ -22,26 +23,26 @@ jobs:
       NUGET_CERT_REVOCATION_MODE: offline
     steps:
       - name: Get Source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: Statiq.Web
           submodules: recursive
       - name: Checkout Statiq.Framework
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
-          repository: statiqdev/Statiq.Framework
+          repository: flcdrg/Statiq.Framework # Using my fork for now
           path: Statiq.Framework
           submodules: recursive
+          ref: net80incremental
       - name: Install .NET Core SDK
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: |
-            3.1.x
-            6.0.x
+            8.x
       - name: Build and Test
         run: dotnet test --logger "trx;LogFileName=test-results.trx"
       - name: Upload Test Results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: success() || failure()
         with:
           name: test-results-${{ matrix.os }}
